@@ -1,0 +1,9 @@
+[Unit]
+Description=Backup ephemeral data
+Requires=ephemeral-disk.service ephemeral-data.mount
+After=ephemeral-disk.service ephemeral-data.mount
+ConditionPathIsMountPoint=/ephemeral/data
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /etc/ephemeral-scripts/ephemeral-backup.sh

@@ -1,0 +1,14 @@
+[Unit]
+Description=Mount ephemeral disk
+Requires=ephemeral-disk.service ephemeral-units.service
+Before=ephemeral-units.service
+After=ephemeral-disk.service
+
+[Install]
+WantedBy=local-fs.target
+
+[Mount]
+EnvironmentFile=/etc/default/ephemeral-disk
+What=/dev/mapper/ephemeral-data
+Type=${MOUNT_FSTYPE}
+Options=${MOUNT_OPTIONS}

@@ -1,0 +1,15 @@
+[Unit]
+Description=Run services using ephemeral disk
+Requires=ephemeral-disk.service ephemeral-data.mount
+After=ephemeral-disk.service ephemeral-data.mount
+Before=docker.socket docker.service
+ConditionPathIsMountPoint=/ephemeral/data
+
+[Install]
+RequiredBy=docker.socket docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/bin/true

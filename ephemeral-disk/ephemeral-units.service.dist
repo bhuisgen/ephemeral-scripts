@@ -1,0 +1,15 @@
+[Unit]
+Description=Run services using ephemeral disk
+Requires=ephemeral-disk.service ephemeral-data.mount
+After=ephemeral-disk.service ephemeral-data.mount
+Before=# LIST HERE YOUR UNITS
+ConditionPathIsMountPoint=/ephemeral/data
+
+[Install]
+RequiredBy=# LIST HERE YOUR UNITS
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/bin/true

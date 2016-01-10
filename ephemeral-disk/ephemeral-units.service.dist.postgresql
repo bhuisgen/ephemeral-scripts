@@ -1,0 +1,15 @@
+[Unit]
+Description=Run services using ephemeral disk
+Requires=ephemeral-disk.service ephemeral-data.mount
+After=ephemeral-disk.service ephemeral-data.mount
+Before=postgresql.service postgresql@9.4-main.service
+ConditionPathIsMountPoint=/ephemeral/data
+
+[Install]
+RequiredBy=postgresql.service postgresql@9.4-main.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/bin/true

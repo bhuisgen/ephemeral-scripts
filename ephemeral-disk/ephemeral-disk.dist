@@ -1,0 +1,32 @@
+# ephemeral disk device
+DISK=/dev/xvdb
+
+# swap partition device
+SWAP_DISK=/dev/xvdb1
+
+# swap partition in MB
+SWAP_SIZE=1024
+
+# VG device
+VG_DISK=/dev/xvdb2
+
+# VG name *** DON'T CHANGE THIS SETTING ***
+VG_NAME=ephemeral
+
+# LV name *** DON'T CHANGE THIS SETTING ***
+LV_NAME=data
+
+# LV size of VG
+LV_SIZE=90%VG
+
+# filesystem type
+MOUNT_FSTYPE=ext4
+
+# mount options
+MOUNT_OPTIONS="defaults,noatime,nodev,nosuid"
+
+# mountpoint *** DON'T CHANGE THIS SETTING ***
+MOUNT_PATH=/ephemeral/data
+
+# destroy on stop
+DESTROY_ON_STOP=0

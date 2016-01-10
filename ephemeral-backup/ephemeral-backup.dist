@@ -1,0 +1,17 @@
+# VG name *** DON'T CHANGE THIS SETTING ***
+VG_NAME=ephemeral
+
+# LV name *** DON'T CHANGE THIS SETTING ***
+LV_NAME=data
+
+# LV snapshot name *** DON'T CHANGE THIS SETTING ***
+LV_SNAPSHOT_NAME=data-snap
+
+# LV snapshot size
+LV_SNAPSHOT_SIZE=100%FREE
+
+# snapshot mount path *** DON'T CHANGE THIS SETTING ***
+MOUNT_PATH=/ephemeral/snapshot
+
+# backup script
+BACKUP_SCRIPT=/etc/ephemeral-scripts/backup

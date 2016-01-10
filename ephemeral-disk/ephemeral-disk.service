@@ -1,0 +1,14 @@
+[Unit]
+Description=Setup ephemeral disk
+Requires=ephemeral-data.mount ephemeral-units.service
+Before=ephemeral-data.mount ephemeral-units.service
+ConditionPathIsMountPoint=!/ephemeral/data
+
+[Install]
+WantedBy=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh /etc/ephemeral-scripts/ephemeral-disk_start.sh
+ExecStop=/bin/sh /etc/ephemeral-scripts/ephemeral-disk_stop.sh

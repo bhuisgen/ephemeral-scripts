@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs ephemeral backup every day
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1d
+Unit=ephemeral-backup.service
+
+[Install]
+WantedBy=multi-user.target
