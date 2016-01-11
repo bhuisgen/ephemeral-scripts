@@ -2,8 +2,8 @@
 Description=Runs ephemeral backup every day
 
 [Timer]
-OnBootSec=15min
-OnUnitActiveSec=1d
+OnCalendar=daily
+Persistent=true
 Unit=ephemeral-backup.service
 
 [Install]
