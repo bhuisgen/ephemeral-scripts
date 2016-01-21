@@ -3,7 +3,7 @@
 
 Boris HUISGEN <bhuisgen@hbis.fr>
 
-A set of shell scripts to prepare, use and backup your data on Amazon EC2 ephemeral disks.
+Systemd units to prepare, use and backup your data on Amazon EC2 ephemeral disks.
 
 ## Dependencies
 
