@@ -1,6 +1,6 @@
 [Unit]
 Description=Run services using ephemeral disk
-Requires=ephemeral-disk.service ephemeral-data.mount
+Requires=ephemeral-disk.service ephemeral-data.mount docker.socket docker.service
 After=ephemeral-disk.service ephemeral-data.mount
 Before=docker.socket docker.service
 ConditionPathIsMountPoint=/ephemeral/data

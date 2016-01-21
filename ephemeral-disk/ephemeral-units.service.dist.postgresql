@@ -1,6 +1,6 @@
 [Unit]
 Description=Run services using ephemeral disk
-Requires=ephemeral-disk.service ephemeral-data.mount
+Requires=ephemeral-disk.service ephemeral-data.mount postgresql.service postgresql@9.4-main.service
 After=ephemeral-disk.service ephemeral-data.mount
 Before=postgresql.service postgresql@9.4-main.service
 ConditionPathIsMountPoint=/ephemeral/data
