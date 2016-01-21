@@ -1,114 +1,166 @@
 #!/bin/bash
+#
+# Backup script skeleton
+#
 
+# ##
+# # Change the default mount path of the snapshot.
+# # <p>
+# # Optional, default value from configuration file.
 # #
-# # Change the default mount path of the snapshot
+# # @param $1 the default mount path
+# # @return the new mount path
 # #
 # function get_mount_path() {
-#   mount_path=$1
+#     mount_path=$1
 #
-#   echo "$mount_path";
+#     echo "$mount_path";
 # }
 
+# ##
+# # Change the default name of the snapshot.
+# # <p>
+# # Optional, default value from configuration file.
 # #
-# # Change the default name of the snapshot
+# # @param $1 the default snapshot name
+# # @return the new snapshot name
 # #
 # get_snapshot_name() {
-#   snapshot_name=$1
+#     snapshot_name=$1
 #
-#   echo "$snapshot_name";
+#     echo "$snapshot_name";
 # }
 
+# ##
+# # Change the default size of the snapshot.
+# # <p>
+# # Optional, default value from configuration file.
 # #
-# # Change the default size of the snapshot
+# # @param $1 the default snapshot size
+# # @return the new snapshot size
 # #
 # get_snapshot_size() {
-#   snapshot_size=$1
+#     snapshot_size=$1
 #
-#   echo "$snapshot_size";
+#     echo "$snapshot_size";
 # }
 
+# ##
+# # Execute commands after initialization.
+# # <p>
+# # Optional hook.
 # #
-# # Execute commands after initialization
+# # @return 0 to continue; otherwise stop the backup
 # #
 # hook_init() {
-#   #
-#   # Add your commands here
-#   #
+#     #
+#     # Add your commands here
+#     #
 #
-#   return $?
+#     return $?
 # }
 
+# ##
+# # Execute commands after checking.
+# # <p>
+# # Optional hook.
 # #
-# # Execute commands after checking
+# # @return 0 to continue; otherwise stop the backup
 # #
 # hook_check() {
-#   #
-#   # Add your commands here
-#   #
+#     #
+#     # Add your commands here
+#     #
 #
-#   return $?
+#     return $?
 # }
 
-# #
-# # Execute commands when backup has been done
+# ##
+# # Execute commands before exiting when backup has been done successfully.
+# # <p>
+# # Optional hook.
 # #
 # hook_success() {
-#   #
-#   # Add your commands here
-#   #
+#     #
+#     # Add your commands here
+#     #
 # }
 
-# #
-# # Execute commands when backup has failed
+# ##
+# # Execute commands before exiting when backup has failed.
+# # <p>
+# # Optional hook.
 # #
 # hook_error() {
-#   #
-#   # Add your commands here
-#   #
+#     #
+#     # Add your commands here
+#     #
 # }
 
+# ##
+# # Execute commands before creating snapshot.
+# # <p>
+# # Optional hook.
 # #
-# # Execute commands before creating snapshot
+# # @param $1 the snapshot name
+# # @param $2 the snapshot LV disk
+# # @param $3 the data LV disk
+# # @return 0 to continue; otherwise stop the backup
 # #
 # hook_before_create_snapshot() {
-#   #snapshot_name=$1
-#   #snapshot_disk=$2
-#   #lv_disk=$3
+#     #snapshot_name=$1
+#     #snapshot_disk=$2
+#     #lv_disk=$3
 #
-#   #
-#   # Add your commands here
-#   #
+#     #
+#     # Add your commands here
+#     #
 #
-#   return $?
+#     return $?
 # }
 
+# ##
+# # Execute commands after creating snapshot.
+# # <p>
+# # Optional hook.
 # #
-# # Execute commands after creating snapshot
+# # @param $1 the snapshot name
+# # @param $2 the snapshot LV disk
+# # @param $3 the data LV disk
+# # @return 0 to continue; otherwise stop the backup
 # #
 # hook_after_create_snapshot() {
-#   #snapshot_name=$1
-#   #snapshot_disk=$2
-#   #lv_disk=$3
+#     #snapshot_name=$1
+#     #snapshot_disk=$2
+#     #lv_disk=$3
 #
-#   #
-#   # Add your commands here
-#   #
+#     #
+#     # Add your commands here
+#     #
 #
-#   return $?
+#     return $?
 # }
 
-# #
-# # Execute commands to backup snapshot
-# #
-# hook_backup() {
-#   #mount_path=$1
-#   #snapshot_name=$2
-#   #snapshot_disk=$3
-#   #lv_disk=$4
+##
+# Execute commands to backup snapshot.
+# <p>
+# Mandatory hook.
 #
-#   #
-#   # Add your commands here
-#   #
+# @param $1 the mount path
+# @param $2 the snapshot name
+# @param $3 the snapshot LV disk
+# @param $4 the data LV disk
+# @return 0 to continue; otherwise stop the backup
 #
-#   return $?
-# }
+hook_backup() {
+    #mount_path=$1
+    #snapshot_name=$2
+    #snapshot_disk=$3
+    #lv_disk=$4
+
+    #
+    # Add your commands here
+    #
+
+    return $?
+}

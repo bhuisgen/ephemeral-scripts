@@ -3,24 +3,22 @@
 
 Boris HUISGEN <bhuisgen@hbis.fr>
 
-A set of shell scripts to prepare and backup Amazon EC2 ephemeral disks.
+A set of shell scripts to prepare, use and backup your data on Amazon EC2 ephemeral disks.
 
 ## Dependencies
 
-    # apt install lvm2 make parted
+    # apt install make parted lvm2
 
 ## ephemeral-disk
 
 This script prepares the ephemeral drive at each system boot by creating:
-* a swap space on the first partition
-* a LVM volume group *ephemeral* on the second partition
+* a LVM volume group *ephemeral*
+* a LVM logical volume *swap* for swap space (if enabled in configuration)
 * a LVM logical volume *data* which will be mounted in */ephemeral/data*.
 
-If the partitions are already created, nothing is done except mounting. But you can configure the script to destroy the ephemeral disk at each reboot/shutdown.
+If the partitions are already present, nothing is done except mounting them. After mounting, the service starts all required services using data on the ephemeral storage.
 
-The LVM volume group will have free space to allow snapshot creation and backup. The second script *ephemeral-backup* will do the job for you.
-
-After partitions creation, the script will start the services which need and use the ephemeral storage.
+The LVM volume group will have sufficient free space to allow snapshot creation and backup. The second script *ephemeral-backup* will do the job for you.
 
 ### Installation
 
@@ -82,3 +80,41 @@ Start the ephemeral backup service:
 To start a backup immediately:
 
     # make backup
+
+or at any time:
+
+    # systemctl start ephemeral-backup.service
+
+### FAQ
+
+* How to restore my ephemeral disk from a previous snasphot ?
+
+To restore a previous snapshot, stop your services:
+
+    # systemctl stop ephemeral-units.service
+
+Copy the snapshot archive file to restore and extract it:
+
+    # cd /ephemeral/data
+    # rm -fr .
+    # tar xzf /mnt/ebs/host/data-snap01012016.tar.gz
+
+Restart the services:
+
+    # systemctl start ephemeral-units.service
+
+* How to upgrade a previous installation of these scripts ?
+
+If your ephemeral disk has been partitioned by a previous version of these scripts, you need first to make a backup of your data:
+
+    # systemctl start ephemeral-backup.service
+
+Then proceed to the uninstallation:
+
+    # cd ~/ephemeral-scripts/ephemeral-backup/
+    # make stop && make uninstall
+
+    # cd ~/ephemeral-scripts/ephemeral-disk/
+    # make stop && make uninstall
+
+You can now install the latest scripts and restore your data.

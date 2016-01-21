@@ -1,23 +1,23 @@
 # ephemeral disk device
 DISK=/dev/xvdb
 
-# swap partition device
-SWAP_DISK=/dev/xvdb1
-
-# swap partition in MB
-SWAP_SIZE=1024
-
-# VG device
-VG_DISK=/dev/xvdb2
+# enable swap
+SWAP=1
 
 # VG name *** DON'T CHANGE THIS SETTING ***
 VG_NAME=ephemeral
 
-# LV name *** DON'T CHANGE THIS SETTING ***
-LV_NAME=data
+# LV name of swap *** DON'T CHANGE THIS SETTING ***
+LV_SWAP=swap
 
-# LV size of VG
-LV_SIZE=90%VG
+# LV size of data
+LV_SWAP_SIZE="1024M"
+
+# LV name of data *** DON'T CHANGE THIS SETTING ***
+LV_DATA=data
+
+# LV size of data
+LV_DATA_SIZE=90%FREE
 
 # filesystem type
 MOUNT_FSTYPE=ext4
