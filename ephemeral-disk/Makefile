@@ -19,7 +19,7 @@ install:
 uninstall:
 	rm -f /etc/ephemeral-scripts/ephemeral-disk_start.sh
 	rm -f /etc/ephemeral-scripts/ephemeral-disk_stop.sh
-	rm -f /etc/ephemeral-scripts/
+	rmdir /etc/ephemeral-scripts/
 	rm -f /etc/systemd/system/ephemeral-disk.service
 	rm -f /etc/systemd/system/ephemeral-data.mount
 	rm -f /etc/systemd/system/ephemeral-units.service
@@ -35,9 +35,9 @@ start:
 	systemctl enable ephemeral-units.service
 
 stop:
-	systemctl stop ephemeral-units.service
-	systemctl stop ephemeral-data.mount
-	systemctl stop ephemeral-disk.service
 	systemctl disable ephemeral-units.service
 	systemctl disable ephemeral-data.mount
 	systemctl disable ephemeral-disk.service
+	systemctl stop ephemeral-units.service
+	systemctl stop ephemeral-data.mount
+	systemctl stop ephemeral-disk.service

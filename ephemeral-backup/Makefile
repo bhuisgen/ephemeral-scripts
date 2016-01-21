@@ -30,8 +30,8 @@ start:
 	systemctl enable ephemeral-backup.timer
 
 stop:
-	systemctl stop ephemeral-backup.timer
 	systemctl disable ephemeral-backup.timer
+	systemctl stop ephemeral-backup.timer
 
 backup:
 	systemctl start ephemeral-backup.service
