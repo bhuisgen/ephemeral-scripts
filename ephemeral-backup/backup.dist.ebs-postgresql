@@ -5,6 +5,8 @@
 
 EBS_DEVICE=/dev/xvdc
 EBS_MOUNTPATH=/mnt/ebs
+EBS_BACKUPDIR="$EBS_MOUNTPATH/$HOSTNAME"
+HISTORY_MAXDAYS=3
 
 get_snapshot_name() {
     snapshot_name=$1
@@ -38,6 +40,7 @@ hook_error() {
 }
 
 hook_success() {
+    find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type f -name '*.tar.gz' -ctime +$HISTORY_MAXDAYS -delete
     umount "$EBS_MOUNTPATH" > /dev/null 2>&1 || /bin/true
 }
 
@@ -59,7 +62,8 @@ hook_backup() {
     mount_path=$1
     snapshot_name=$2
 
-    tar czf "$EBS_MOUNTPATH/$snapshot_name.tar.gz" -C $mount_path .
+    mkdir -p "$EBS_BACKUPDIR"
+    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C $mount_path
 
     return $?
 }
