@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Backup a PostgreSQL server on a external EBS disk
+# Backup files with rsync on a external EBS disk
 #
 
 EBS_DEVICE=/dev/xvdc
@@ -40,22 +40,8 @@ hook_error() {
 }
 
 hook_success() {
-    find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type f -name '*.tar.gz' -ctime +$HISTORY_MAXDAYS -delete
+    find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type d -ctime +$HISTORY_MAXDAYS -print0|xargs -0 rm -fr
     umount "$EBS_MOUNTPATH" > /dev/null 2>&1 || /bin/true
-}
-
-hook_before_create_snapshot() {
-    snapshot_name=$1
-
-    su -c "psql -c \"SELECT pg_start_backup('$snapshot_name');\"" -l postgres
-
-    return "$?"
-}
-
-hook_after_create_snapshot() {
-    su -c "psql -c \"SELECT pg_stop_backup();\"" -l postgres
-
-    return "$?"
 }
 
 hook_backup() {
@@ -63,7 +49,7 @@ hook_backup() {
     snapshot_name=$2
 
     mkdir -p "$EBS_BACKUPDIR"
-    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C $mount_path
+    rsync -a --delete "$mount_path/" "$EBS_BACKUPDIR/$snapshot_name/"
 
     return $?
 }
