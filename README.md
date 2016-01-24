@@ -11,14 +11,14 @@ Systemd units to prepare, use and backup your data on Amazon EC2 ephemeral disks
 
 ## ephemeral-disk
 
-This script prepares the ephemeral drive at each system boot by creating:
-* a LVM volume group *ephemeral*
-* a LVM logical volume *swap* for swap space (if enabled in configuration)
-* a LVM logical volume *data* which will be mounted in */ephemeral/data*.
+This script prepares the ephemeral disks of an EC2 instance at each system boot by creating a swap partition (if enabled in configuration) and a data partition wich will be mounted in the directory */ephemeral/data*. If the partitions are already created, nothing is done except mounting them. After mounting, the service starts by dependency all required services.
 
-If the partitions are already present, nothing is done except mounting them. After mounting, the service starts all required services using data on the ephemeral storage.
+LVM is used like this:
+* a LVM volume group *ephemeral* of all disks
+* a LVM logical volume *swap* for the swap partition
+* a LVM logical volume *data* for the data partition
 
-The LVM volume group will have sufficient free space to allow snapshot creation and backup. The second script *ephemeral-backup* will do the job for you.
+The LVM volume group will have sufficient free space to allow snapshot creation and backup with the script *ephemeral-backup*.
 
 ### Installation
 
@@ -88,7 +88,7 @@ or at any time:
 
 ### FAQ
 
-* How to restore my ephemeral disk from a previous snasphot ?
+**How to restore my ephemeral disk from a previous snasphot ?**
 
 To restore a previous snapshot, stop your services:
 
@@ -104,7 +104,7 @@ Restart the services:
 
     # systemctl start ephemeral-units.service
 
-* How to upgrade a previous installation of these scripts ?
+**How to upgrade a previous installation of these scripts ?**
 
 If your ephemeral disk has been partitioned by a previous version of these scripts, you need first to make a backup of your data:
 
