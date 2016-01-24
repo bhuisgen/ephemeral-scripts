@@ -46,7 +46,7 @@ if [ ! -b "$LV_DISK" ]; then
     fi
 
     echo "Creating LVM LV $VG_NAME/$LV_DATA ..."
-    lvcreate --yes -l "$LV_DATA_SIZE" -n "$LV_DATA" "$VG_NAME"
+    lvcreate --yes -l "$LV_DATA_EXTENTS" -n "$LV_DATA" "$VG_NAME"
 
     echo "Formating data partition ..."
     sh -c "mkfs.$MOUNT_FSTYPE -F \"/dev/$VG_NAME/$LV_DATA\""

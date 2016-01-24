@@ -16,8 +16,8 @@ LV_SWAP_SIZE="1024M"
 # LV name of data *** DON'T CHANGE THIS SETTING ***
 LV_DATA=data
 
-# LV size of data
-LV_DATA_SIZE=90%FREE
+# LV extents of data
+LV_DATA_EXTENTS=90%FREE
 
 # filesystem type
 MOUNT_FSTYPE=ext4
