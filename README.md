@@ -39,17 +39,18 @@ Start the ephemeral disk services:
 
     # make start
 
-Check that the data and swap partitions are created and mounted:
+Check that swap and data partitions are created and mounted:
 
     # cat /proc/swaps
+    # free -m
     # lvs
     # cd /ephemeral/data
 
-Verify you bootorder after a system restart:
+To be sure verify your bootorder after a system restart:
 
     # systemd-analyze plot > bootorder.svg
 
-The unit *ephemeral-units.service* must be started before all your service units which need the ephemeral storage.
+The unit *ephemeral-units.service* must be started before all units using the ephemeral storage.
 
 ## ephemeral-backup
 
