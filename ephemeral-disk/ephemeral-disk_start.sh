@@ -12,7 +12,9 @@ if [ ! -b "$LV_DISK" ]; then
     wipefs -f --all "$DISK"
 
     echo "Partitioning disk ..."
-    sh -c "(/bin/echo -e ',,8e')|/sbin/sfdisk ${DISK} --DOS --IBM -uM --quiet"
+    parted --script ${DISK} mklabel gpt
+    parted --script --align optimal ${DISK} mkpart primary ext4 2048s 100%
+    parted --script ${DISK} set 1 lvm on
     partprobe
 
     echo "Preparing LVM storage ..."

@@ -14,7 +14,7 @@ if [ "$SWAP" -eq "1" ]; then
 
         if [ "$r_device" = "$r_swap" ]; then
             echo "Desactivating swap ..."
-            swapoff -e "/dev/$VG_NAME/$LV_SWAP"
+            swapoff "/dev/$VG_NAME/$LV_SWAP"
         fi
     done
 fi
