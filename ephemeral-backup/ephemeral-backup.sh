@@ -59,7 +59,7 @@ echo "Creating snapshot ..."
 function_exists hook_before_create_snapshot &&
 hook_before_create_snapshot "$LV_SNAPSHOT_NAME" "$LV_SNAPSHOT_DISK" "$LV_DISK" ||
 exit_error "Function hook_before_create_snapshot() failed"
-lvcreate -s -l "$LV_SNAPSHOT_SIZE" -n "$LV_SNAPSHOT_NAME" "$VG_NAME/$LV_NAME" ||
+lvcreate -s -L "$LV_SNAPSHOT_SIZE" -n "$LV_SNAPSHOT_NAME" "$VG_NAME/$LV_NAME" ||
 exit_error "Failed to create snapshot"
 function_exists hook_after_create_snapshot &&
 hook_after_create_snapshot "$LV_SNAPSHOT_NAME" "$LV_SNAPSHOT_DISK" "$LV_DISK" ||

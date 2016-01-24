@@ -8,7 +8,7 @@ LV_NAME=data
 LV_SNAPSHOT_NAME=data-snap
 
 # LV snapshot size
-LV_SNAPSHOT_SIZE=100%FREE
+LV_SNAPSHOT_SIZE=1G
 
 # snapshot mount path *** DON'T CHANGE THIS SETTING ***
 MOUNT_PATH=/ephemeral/snapshot
