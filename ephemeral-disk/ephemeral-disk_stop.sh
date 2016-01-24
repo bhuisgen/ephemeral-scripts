@@ -24,17 +24,24 @@ if [ "$DESTROY_ON_STOP" -eq "1" ]; then
     rmdir "$MOUNT_PATH"
 
     if [ "$SWAP" -eq "1" ]; then
-        echo "Removing LVM swap partition ..."
+        echo "Removing LVM LV $VG_NAME/$LV_SWAP ..."
         lvremove -f "$VG_NAME/$LV_SWAP"
     fi
 
-    echo "Removing LVM data partition ..."
+    echo "Removing LVM LV $VG_NAME/$LV_DATA ..."
     lvremove -f "$VG_NAME/$LV_DATA"
 
-    echo "Removing LVM storage ..."
+    echo "Removing LVM VG $VG_NAME ..."
     vgremove -f "$VG_NAME"
-    pvremove -f "${DISK}1"
 
-    echo "Wiping disk ..."
-    wipefs -f --all "$DISK"
+    oldIFS=$IFS
+    IFS=','
+    for disk in $DISKS; do
+        echo "Removing LVM PV ${disk}1 ..."
+        pvremove -f "${disk}1"
+
+        echo "Wiping disk ${disk} ..."
+        wipefs -f --all "$disk"
+    done
+    IFS=$oldIFS
 fi

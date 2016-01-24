@@ -1,5 +1,5 @@
-# ephemeral disk device
-DISK=/dev/xvdb
+# ephemeral disks (coma separated list)
+DISKS=/dev/xvdb
 
 # enable swap
 SWAP=1
