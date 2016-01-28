@@ -4,6 +4,10 @@ Requires=ephemeral-disk.service ephemeral-data.mount
 After=ephemeral-disk.service ephemeral-data.mount
 ConditionPathIsMountPoint=/ephemeral/data
 
+[Install]
+WantedBy=local-fs.target
+RequiredBy=ephemeral-disk.service ephemeral-data.mount
+
 [Service]
 Type=simple
 ExecStart=/bin/bash /etc/ephemeral-scripts/ephemeral-backup.sh

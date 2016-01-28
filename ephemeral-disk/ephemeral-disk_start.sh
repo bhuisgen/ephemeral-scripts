@@ -5,37 +5,65 @@ set -e
 
 . /etc/default/ephemeral-disk
 
+disks_list=""
+partitions_list=""
+partitions_count=0
+oldIFS=$IFS
+IFS=','
+for disk in $DISKS; do
+    disks_list="$disks_list $disk"
+    partitions_list="$partitions_list ${disk}1"
+    partitions_count=$(($partitions_count + 1))
+done
+IFS=$oldIFS
+disks_list=${disks_list## }
+partitions_list=${partitions_list## }
+
 LV_DISK="/dev/$VG_NAME/$LV_DATA"
 
 if [ ! -b "$LV_DISK" ]; then
-    oldIFS=$IFS
-    IFS=','
-    for disk in $DISKS; do
-        echo "Wiping disk $disk ..."
-        wipefs -f --all $disk
+    echo "Wiping disk(s) $disks_list ..."
+    wipefs -faq $disks_list
 
+    for disk in $disks_list; do
         echo "Partitioning disk $disk ..."
-        parted --script ${disk} mklabel gpt
-        parted --script --align optimal ${disk} mkpart primary ext4 2048s 100%
-        parted --script ${disk} set 1 lvm on
+        parted --script "$disk" mklabel gpt
+        parted --script --align optimal "$disk" mkpart primary ext2 2048s 100%
 
-        echo "Creating LVM PV ${disk}1 ..."
-        pvcreate -f ${disk}1
+        if [ "$MD" -eq "1" ]; then
+            echo "Enabling partition RAID flag ..."
+            parted --script "$disk" set 1 raid on
+        else
+            echo "Enabling partition LVM flag ..."
+            parted --script "$disk" set 1 lvm on
+        fi
     done
-    IFS=$oldIFS
 
     echo "Probing partitions ..."
     partprobe
 
-    echo "Creating LVM VG $VG_NAME ..."
-    oldIFS=$IFS
-    IFS=','
-    for disk in $DISKS; do
-        disks_list="$disks_list ${disk}1"
-    done
-    IFS=$oldIFS
-    disks_list=${disks_list## }
-    vgcreate -f $VG_NAME $disks_list
+    if [ "$MD" -eq "1" ]; then
+        echo "Creating MD device /dev/md0 ..."
+        yes | mdadm --create "$MD_DEVICE" --level=$MD_LEVEL --chunk=$MD_CHUNK --raid-devices=$partitions_count $partitions_list
+
+        echo "Storing MD device configuration ..."
+        sed -i '/^# Begin of ephemeral-scripts configuration/,/^# End of ephemeral-scripts configuration/{d}' "$MD_CONFIG"
+        echo "# Begin of ephemeral-scripts configuration" >> "$MD_CONFIG"
+        mdadm --detail --scan >> "$MD_CONFIG"
+        echo "# End of ephemeral-scripts configuration" >> "$MD_CONFIG"
+
+        echo "Creating LVM PV $MD_DEVICE ..."
+        pvcreate -f "$MD_DEVICE"
+
+        echo "Creating LVM VG $VG_NAME ..."
+        vgcreate -f "$VG_NAME" "$MD_DEVICE"
+    else
+        echo "Creating LVM PV(s) $partitions_list ..."
+        pvcreate -fy $partitions_list
+
+        echo "Creating LVM VG $VG_NAME ..."
+        vgcreate -f "$VG_NAME" $partitions_list
+    fi
 
     if [ "$SWAP" -eq "1" ]; then
         echo "Creating LVM LV $VG_NAME/$LV_SWAP ..."

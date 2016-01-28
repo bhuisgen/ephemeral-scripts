@@ -6,7 +6,8 @@ Before=docker.socket docker.service
 ConditionPathIsMountPoint=/ephemeral/data
 
 [Install]
-RequiredBy=docker.socket docker.service
+WantedBy=local-fs.target
+RequiredBy=ephemeral-disk.service ephemeral-data.mount docker.socket docker.service
 
 [Service]
 Type=oneshot
