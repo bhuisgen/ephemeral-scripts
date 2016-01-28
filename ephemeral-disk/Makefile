@@ -1,6 +1,6 @@
 all: install
 
-.PHONY: install start stop uninstall
+.PHONY: disable enable install start stop uninstall
 
 install:
 	stat ephemeral-disk > /dev/null 2>&1 || (echo "ephemeral-disk file not found" ; exit 1)
@@ -26,18 +26,22 @@ uninstall:
 	rm -f /etc/default/ephemeral-disk
 	systemctl daemon-reload
 
-start:
-	systemctl start ephemeral-disk.service
-	systemctl start ephemeral-data.mount
-	systemctl start ephemeral-units.service
+enable:
 	systemctl enable ephemeral-disk.service
 	systemctl enable ephemeral-data.mount
 	systemctl enable ephemeral-units.service
 
-stop:
+disable:
 	systemctl disable ephemeral-units.service
 	systemctl disable ephemeral-data.mount
 	systemctl disable ephemeral-disk.service
+
+start:
+	systemctl start ephemeral-disk.service
+	systemctl start ephemeral-data.mount
+	systemctl start ephemeral-units.service
+
+stop:
 	systemctl stop ephemeral-units.service
 	systemctl stop ephemeral-data.mount
 	systemctl stop ephemeral-disk.service

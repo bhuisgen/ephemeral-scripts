@@ -25,12 +25,16 @@ uninstall:
 	rm -f /etc/default/ephemeral-disk
 	systemctl daemon-reload
 
-start:
-	systemctl start ephemeral-backup.timer
+enable:
 	systemctl enable ephemeral-backup.timer
 
-stop:
+disable:
 	systemctl disable ephemeral-backup.timer
+
+start:
+	systemctl start ephemeral-backup.timer
+
+stop:
 	systemctl stop ephemeral-backup.timer
 
 backup:
