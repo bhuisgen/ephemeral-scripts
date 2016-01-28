@@ -9,6 +9,10 @@ Systemd units to prepare, use and backup your data on Amazon EC2 ephemeral disks
 
     # apt install make parted lvm2
 
+Optionally, if you want to use RAID to increase disks performance:
+
+    # apt install mdadm
+
 ## ephemeral-disk
 
 This script prepares the ephemeral disks of an EC2 instance at each system boot by creating a swap partition (if enabled in configuration) and a data partition wich will be mounted in the directory */ephemeral/data*. If the partitions are already created, nothing is done except mounting them. After mounting, the service starts by dependency all required services.
@@ -31,12 +35,12 @@ The LVM volume group will have sufficient free space to allow snapshot creation 
     # vim ephemeral-units.service
 
     # make install
-    # make start
 
 ### Usage
 
 Start the ephemeral disk services:
 
+    # make enable
     # make start
 
 Check that swap and data partitions are created and mounted:
@@ -74,8 +78,9 @@ The timer *ephemeral-backup-daily.timer* will run periodically the service *ephe
 
 ### Usage
 
-Start the ephemeral backup service:
+Start the ephemeral backup timer:
 
+    # make enable
     # make start
 
 To start a backup immediately:
