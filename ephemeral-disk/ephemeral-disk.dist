@@ -1,6 +1,21 @@
 # ephemeral disks (coma separated list)
 DISKS=/dev/xvdb
 
+# enable RAID
+MD=0
+
+# RAID level
+MD_LEVEL=1
+
+# RAID device
+MD_DEVICE=/dev/md0
+
+# RAID chunk size in kbytes
+MD_CHUNK=64
+
+# Configuration file of mdadm
+MD_CONFIG=/etc/mdadm/mdadm.conf
+
 # enable swap
 SWAP=1
 

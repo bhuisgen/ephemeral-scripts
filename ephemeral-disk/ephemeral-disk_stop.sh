@@ -5,24 +5,37 @@ set -e
 
 . /etc/default/ephemeral-disk
 
+disks_list=""
+partitions_list=""
+oldIFS=$IFS
+IFS=','
+for disk in $DISKS; do
+    disks_list="$disks_list $disk"
+    partitions_list="$partitions_list ${disk}1"
+done
+IFS=$oldIFS
+disks_list=${disks_list## }
+partitions_list=${partitions_list## }
+
 if [ "$SWAP" -eq "1" ]; then
     swap="/dev/$VG_NAME/$LV_SWAP"
-    r_swap=$(realpath "$swap")
 
-    for device in $(swapon -s|tail -n +2|awk '{print $1}'); do
-        r_device=$(realpath "$device")
+    if [ -b "$swap" ]; then
+        r_swap=$(realpath -q "$swap")
 
-        if [ "$r_device" = "$r_swap" ]; then
-            echo "Desactivating swap ..."
-            swapoff "/dev/$VG_NAME/$LV_SWAP"
-        fi
-    done
+        for device in $(swapon -s|tail -n +2|awk '{print $1}'); do
+            r_device=$(realpath "$device")
+            if [ "$r_device" = "$r_swap" ]; then
+                echo "Desactivating swap ..."
+                swapoff "/dev/$VG_NAME/$LV_SWAP"
+
+                break
+            fi
+        done
+    fi
 fi
 
 if [ "$DESTROY_ON_STOP" -eq "1" ]; then
-    echo "Removing data mountpoint ..."
-    rmdir "$MOUNT_PATH"
-
     if [ "$SWAP" -eq "1" ]; then
         echo "Removing LVM LV $VG_NAME/$LV_SWAP ..."
         lvremove -f "$VG_NAME/$LV_SWAP"
@@ -34,14 +47,26 @@ if [ "$DESTROY_ON_STOP" -eq "1" ]; then
     echo "Removing LVM VG $VG_NAME ..."
     vgremove -f "$VG_NAME"
 
-    oldIFS=$IFS
-    IFS=','
-    for disk in $DISKS; do
-        echo "Removing LVM PV ${disk}1 ..."
-        pvremove -f "${disk}1"
+    if [ "$MD" -eq "1" ]; then
+        echo "Removing LVM PV $MD_DEVICE ..."
+        pvremove -f "$MD_DEVICE"
 
-        echo "Wiping disk ${disk} ..."
-        wipefs -f --all "$disk"
-    done
-    IFS=$oldIFS
+        echo "Stopping RAID device $MD_DEVICE ..."
+        mdadm --stop "$MD_DEVICE"
+
+        echo "Removing RAID device $MD_DEVICE ..."
+        #mdadm --remove "$MD_DEVICE"
+
+        echo "Wiping RAID partitions $partitions_list ..."
+        mdadm --zero-superblock $partitions_list
+
+        echo "Wiping disks $disks_list ..."
+        wipefs -faq $disks_list
+    else
+        echo "Removing LVM PV(s) $disks_list ..."
+        pvremove -f $disks_list
+
+        echo "Wiping disk(s) $disks_list ..."
+        wipefs -faq $disks_list
+    fi
 fi
