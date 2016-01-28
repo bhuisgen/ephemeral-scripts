@@ -6,7 +6,8 @@ Before=postgresql.service postgresql@9.4-main.service
 ConditionPathIsMountPoint=/ephemeral/data
 
 [Install]
-RequiredBy=postgresql.service postgresql@9.4-main.service
+WantedBy=local-fs.target
+RequiredBy=ephemeral-disk.service ephemeral-data.mount postgresql.service postgresql@9.4-main.service
 
 [Service]
 Type=oneshot

@@ -6,7 +6,8 @@ Before=# ADD YOUR DEPENDENCIES HERE
 ConditionPathIsMountPoint=/ephemeral/data
 
 [Install]
-RequiredBy=# ADD YOUR DEPENDENCIES HERE
+WantedBy=local-fs.target
+RequiredBy=ephemeral-disk.service ephemeral-data.mount # ADD YOUR DEPENDENCIES HERE
 
 [Service]
 Type=oneshot

@@ -1,11 +1,12 @@
 [Unit]
-Description=Mount ephemeral disk
+Description=Mount ephemeral data partition
 Requires=ephemeral-disk.service ephemeral-units.service
 Before=ephemeral-units.service
 After=ephemeral-disk.service
 
 [Install]
 WantedBy=local-fs.target
+RequiredBy=ephemeral-units.service
 
 [Mount]
 EnvironmentFile=/etc/default/ephemeral-disk
