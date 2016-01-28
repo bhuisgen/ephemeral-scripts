@@ -47,7 +47,10 @@ if [ ! -b "$LV_DISK" ]; then
         yes | mdadm --create "$MD_DEVICE" --level=$MD_LEVEL --chunk=$MD_CHUNK --raid-devices=$partitions_count $partitions_list
 
         echo "Storing MD device configuration ..."
+        sed -i '/^# Begin of ephemeral-scripts configuration/,/^# End of ephemeral-scripts configuration/{d}' "$MD_CONFIG"
+        echo "# Begin of ephemeral-scripts configuration" >> "$MD_CONFIG"
         mdadm --detail --scan >> "$MD_CONFIG"
+        echo "# End of ephemeral-scripts configuration" >> "$MD_CONFIG"
 
         echo "Creating LVM PV $MD_DEVICE ..."
         pvcreate -f "$MD_DEVICE"
