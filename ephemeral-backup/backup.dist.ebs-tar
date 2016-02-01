@@ -49,7 +49,7 @@ hook_backup() {
     snapshot_name=$2
 
     mkdir -p "$EBS_BACKUPDIR"
-    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C $mount_path
+    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C "$mount_path"
 
     return $?
 }

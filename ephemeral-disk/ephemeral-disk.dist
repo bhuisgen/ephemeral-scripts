@@ -2,7 +2,7 @@
 DISKS=/dev/xvdb
 
 # enable RAID
-MD=0
+ENABLE_MD=0
 
 # RAID level
 MD_LEVEL=1
@@ -17,7 +17,7 @@ MD_CHUNK=64
 MD_CONFIG=/etc/mdadm/mdadm.conf
 
 # enable swap
-SWAP=1
+ENABLE_SWAP=1
 
 # VG name *** DON'T CHANGE THIS SETTING ***
 VG_NAME=ephemeral

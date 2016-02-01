@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 [ ! -r /etc/default/ephemeral-disk ] && exit 1
@@ -17,7 +17,7 @@ IFS=$oldIFS
 disks_list=${disks_list## }
 partitions_list=${partitions_list## }
 
-if [ "$SWAP" -eq "1" ]; then
+if [ "$ENABLE_SWAP" -eq "1" ]; then
     swap="/dev/$VG_NAME/$LV_SWAP"
 
     if [ -b "$swap" ]; then
@@ -36,7 +36,7 @@ if [ "$SWAP" -eq "1" ]; then
 fi
 
 if [ "$DESTROY_ON_STOP" -eq "1" ]; then
-    if [ "$SWAP" -eq "1" ]; then
+    if [ "$ENABLE_SWAP" -eq "1" ]; then
         echo "Removing LVM LV $VG_NAME/$LV_SWAP ..."
         lvremove -f "$VG_NAME/$LV_SWAP"
     fi
@@ -47,7 +47,7 @@ if [ "$DESTROY_ON_STOP" -eq "1" ]; then
     echo "Removing LVM VG $VG_NAME ..."
     vgremove -f "$VG_NAME"
 
-    if [ "$MD" -eq "1" ]; then
+    if [ "$ENABLE_MD" -eq "1" ]; then
         echo "Removing LVM PV $MD_DEVICE ..."
         pvremove -f "$MD_DEVICE"
 
@@ -56,15 +56,12 @@ if [ "$DESTROY_ON_STOP" -eq "1" ]; then
         sed -i '/^# Begin of ephemeral-scripts configuration/,/^# End of ephemeral-scripts configuration/{d}' "$MD_CONFIG"
 
         echo "Wiping RAID partitions $partitions_list ..."
-        mdadm --zero-superblock $partitions_list
-
-        echo "Wiping disks $disks_list ..."
-        wipefs -faq $disks_list
+        mdadm --zero-superblock "${partitions_list[@]}"
     else
         echo "Removing LVM PV(s) $disks_list ..."
-        pvremove -f $disks_list
-
-        echo "Wiping disk(s) $disks_list ..."
-        wipefs -faq $disks_list
+        pvremove -f "${disks_list[@]}"
     fi
+
+    echo "Wiping disks $disks_list ..."
+    wipefs -faq "${disks_list[@]}"
 fi
