@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 [ ! -r /etc/default/ephemeral-disk ] && exit 1
@@ -13,7 +13,7 @@ IFS=','
 for disk in $DISKS; do
     disks_list="$disks_list $disk"
     partitions_list="$partitions_list ${disk}1"
-    partitions_count=$(($partitions_count + 1))
+    partitions_count=$((partitions_count + 1))
 done
 IFS=$oldIFS
 disks_list=${disks_list## }
@@ -23,14 +23,14 @@ LV_DISK="/dev/$VG_NAME/$LV_DATA"
 
 if [ ! -b "$LV_DISK" ]; then
     echo "Wiping disk(s) $disks_list ..."
-    wipefs -faq $disks_list
+    wipefs -faq "${disks_list[@]}"
 
     for disk in $disks_list; do
         echo "Partitioning disk $disk ..."
         parted --script "$disk" mklabel gpt
         parted --script --align optimal "$disk" mkpart primary ext2 2048s 100%
 
-        if [ "$MD" -eq "1" ]; then
+        if [ "$ENABLE_MD" -eq "1" ]; then
             echo "Enabling partition RAID flag ..."
             parted --script "$disk" set 1 raid on
         else
@@ -42,15 +42,17 @@ if [ ! -b "$LV_DISK" ]; then
     echo "Probing partitions ..."
     partprobe
 
-    if [ "$MD" -eq "1" ]; then
+    if [ "$ENABLE_MD" -eq "1" ]; then
         echo "Creating MD device /dev/md0 ..."
-        yes | mdadm --create "$MD_DEVICE" --level=$MD_LEVEL --chunk=$MD_CHUNK --raid-devices=$partitions_count $partitions_list
+        yes | mdadm --create "$MD_DEVICE" --level="$MD_LEVEL" --chunk="$MD_CHUNK" --raid-devices="$partitions_count" "${partitions_list[@]}"
 
         echo "Storing MD device configuration ..."
         sed -i '/^# Begin of ephemeral-scripts configuration/,/^# End of ephemeral-scripts configuration/{d}' "$MD_CONFIG"
-        echo "# Begin of ephemeral-scripts configuration" >> "$MD_CONFIG"
-        mdadm --detail --scan >> "$MD_CONFIG"
-        echo "# End of ephemeral-scripts configuration" >> "$MD_CONFIG"
+        {
+            echo "# Begin of ephemeral-scripts configuration" ;
+            mdadm --detail --scan >> "$MD_CONFIG" ;
+            echo "# End of ephemeral-scripts configuration" ;
+        } >> "$MD_CONFIG"
 
         echo "Creating LVM PV $MD_DEVICE ..."
         pvcreate -f "$MD_DEVICE"
@@ -59,13 +61,13 @@ if [ ! -b "$LV_DISK" ]; then
         vgcreate -f "$VG_NAME" "$MD_DEVICE"
     else
         echo "Creating LVM PV(s) $partitions_list ..."
-        pvcreate -fy $partitions_list
+        pvcreate -fy "${partitions_list[@]}"
 
         echo "Creating LVM VG $VG_NAME ..."
-        vgcreate -f "$VG_NAME" $partitions_list
+        vgcreate -f "$VG_NAME" "${partitions_list[@]}"
     fi
 
-    if [ "$SWAP" -eq "1" ]; then
+    if [ "$ENABLE_SWAP" -eq "1" ]; then
         echo "Creating LVM LV $VG_NAME/$LV_SWAP ..."
         lvcreate --yes -L "$LV_SWAP_SIZE" -n "$LV_SWAP" "$VG_NAME"
 
@@ -80,7 +82,7 @@ if [ ! -b "$LV_DISK" ]; then
     sh -c "mkfs.$MOUNT_FSTYPE -F \"/dev/$VG_NAME/$LV_DATA\""
 fi
 
-if [ "$SWAP" -eq "1" ]; then
+if [ "$ENABLE_SWAP" -eq "1" ]; then
     echo "Activating swap ..."
     swapon "/dev/$VG_NAME/$LV_SWAP"
 fi

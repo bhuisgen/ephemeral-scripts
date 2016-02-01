@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# Backup a PostgreSQL server on a external EBS disk
+#
+
+EBS_DEVICE=/dev/xvdc
+EBS_MOUNTPATH=/mnt/ebs
+EBS_BACKUPDIR="$EBS_MOUNTPATH/$HOSTNAME"
+HISTORY_MAXDAYS=3
+
+get_snapshot_name() {
+    snapshot_name=$1
+
+    d=$(date +%Y%m%d)
+
+    echo "${snapshot_name}${d}";
+}
+
+hook_init() {
+    mount|grep -qs -v "^${EBS_DEVICE} on ${EBS_MOUNTPATH} type"
+    if [ $? -eq 0 ]
+    then
+        mkdir -p "$EBS_MOUNTPATH"
+        mount "$EBS_DEVICE" "$EBS_MOUNTPATH"
+    else
+        true
+    fi
+
+    return $?;
+}
+
+hook_check() {
+    grep -qs "$EBS_MOUNTPATH" /proc/mounts
+
+    return $?
+}
+
+hook_error() {
+    umount "$EBS_MOUNTPATH" > /dev/null 2>&1 || /bin/true
+}
+
+hook_success() {
+    find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type f -name '*.tar.gz' -ctime +$HISTORY_MAXDAYS -delete
+    umount "$EBS_MOUNTPATH" > /dev/null 2>&1 || /bin/true
+}
+
+hook_backup() {
+    mount_path=$1
+    snapshot_name=$2
+
+    mkdir -p "$EBS_BACKUPDIR"
+    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C "$mount_path"
+
+    return $?
+}
