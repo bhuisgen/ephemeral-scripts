@@ -1,11 +1,12 @@
 #!/bin/bash
 #
-# Backup files with rsync on a external EBS disk
+# Backup snapshot with rsync on a EBS disk
 #
 
 EBS_DEVICE=/dev/xvdc
 EBS_MOUNTPATH=/mnt/ebs
 EBS_BACKUPDIR="$EBS_MOUNTPATH/$HOSTNAME"
+
 HISTORY_MAXDAYS=3
 
 get_snapshot_name() {

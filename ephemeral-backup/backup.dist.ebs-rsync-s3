@@ -1,13 +1,16 @@
 #!/bin/bash
 #
-# Backup snapshot with tar on a EBS disk
+# Backup snapshot with rsync on a EBS disk and archive it on S3
 #
 
 EBS_DEVICE=/dev/xvdc
 EBS_MOUNTPATH=/mnt/ebs
-EBS_BACKUPDIR="$EBS_MOUNTPATH/$HOSTNAME"
+EBS_BACKUPDIR="$EBS_MOUNTPATH"
+EBS_ARCHIVE=0
 
-HISTORY_MAXDAYS=3
+AWS_CLI=$(which aws)
+AWS_PROFILE="default"
+AWS_S3_BUCKET="s3://my_bucket"
 
 get_snapshot_name() {
     snapshot_name=$1
@@ -41,7 +44,6 @@ hook_error() {
 }
 
 hook_success() {
-    find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type f -name '*.tar.gz' -ctime +$HISTORY_MAXDAYS -delete
     umount "$EBS_MOUNTPATH" > /dev/null 2>&1 || /bin/true
 }
 
@@ -50,7 +52,19 @@ hook_backup() {
     snapshot_name=$2
 
     mkdir -p "$EBS_BACKUPDIR"
-    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C "$mount_path"
+    rsync -a --delete "$mount_path/" "$EBS_BACKUPDIR/$snapshot_name/"
+    if [ $? -ne 0 ]; then
+        return $?
+    fi
+
+    $AWS_CLI --profile "$AWS_PROFILE" s3 sync "$EBS_BACKUPDIR/$snapshot_name/" "$AWS_S3_BUCKET/$snapshot_name/"
+    if [ $? -ne 0 ]; then
+        return $?
+    fi
+
+    if [ "$EBS_ARCHIVE" -eq "0" ]; then
+        rm -fr "${EBS_BACKUPDIR:?}/$snapshot_name/"
+    fi
 
     return $?
 }
