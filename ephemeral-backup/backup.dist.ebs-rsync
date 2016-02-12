@@ -1,11 +1,12 @@
 #!/bin/bash
 #
-# Backup files with rsync on a external EBS disk
+# Backup snapshot with rsync on a EBS disk
 #
 
 EBS_DEVICE=/dev/xvdc
 EBS_MOUNTPATH=/mnt/ebs
 EBS_BACKUPDIR="$EBS_MOUNTPATH/$HOSTNAME"
+
 HISTORY_MAXDAYS=3
 
 get_snapshot_name() {
@@ -13,7 +14,7 @@ get_snapshot_name() {
 
     d=$(date +%Y%m%d)
 
-    echo "${snapshot_name}${d}";
+    echo "${snapshot_name}${d}"
 }
 
 hook_init() {
@@ -26,7 +27,7 @@ hook_init() {
         true
     fi
 
-    return $?;
+    return $?
 }
 
 hook_check() {
@@ -41,6 +42,7 @@ hook_error() {
 
 hook_success() {
     find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type d -ctime +$HISTORY_MAXDAYS -print0|xargs -0 rm -fr
+    
     umount "$EBS_MOUNTPATH" > /dev/null 2>&1 || /bin/true
 }
 

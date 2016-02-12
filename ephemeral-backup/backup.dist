@@ -14,7 +14,7 @@
 # function get_mount_path() {
 #     mount_path=$1
 #
-#     echo "$mount_path";
+#     echo "$mount_path"
 # }
 
 # ##
@@ -28,7 +28,7 @@
 # get_snapshot_name() {
 #     snapshot_name=$1
 #
-#     echo "$snapshot_name";
+#     echo "$snapshot_name"
 # }
 
 # ##
@@ -42,7 +42,7 @@
 # get_snapshot_size() {
 #     snapshot_size=$1
 #
-#     echo "$snapshot_size";
+#     echo "$snapshot_size"
 # }
 
 # ##

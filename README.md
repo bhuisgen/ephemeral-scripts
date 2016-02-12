@@ -9,7 +9,7 @@ Systemd units to prepare, use and backup your data on Amazon EC2 ephemeral disks
 
     # apt install make parted lvm2
 
-Optionally, if you want to use RAID to increase disks performance:
+If you have multiple ephemeral disks, you can use software RAID to increase IO performance:
 
     # apt install mdadm
 
