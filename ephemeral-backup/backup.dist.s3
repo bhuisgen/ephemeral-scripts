@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Backup snapshot on S3
+# Backup snapshot on S3 with AWS CLI
 #
 
 AWS_CLI=$(which aws)

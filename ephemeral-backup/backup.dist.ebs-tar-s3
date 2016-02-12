@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Backup snapshot with tar on a EBS disk and archive it on S3
+# Backup snapshot with tar on a EBS disk and archive it on S3 with AWS CLI
 #
 
 EBS_DEVICE=/dev/xvdc
