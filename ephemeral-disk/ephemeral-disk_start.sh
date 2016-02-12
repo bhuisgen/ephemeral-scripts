@@ -22,8 +22,8 @@ partitions_list=${partitions_list## }
 LV_DISK="/dev/$VG_NAME/$LV_DATA"
 
 if [ ! -b "$LV_DISK" ]; then
-    echo "Wiping disk(s) $disks_list ..."
-    wipefs -faq "${disks_list[@]}"
+    echo "Wiping disk(s) ${disks_list[*]} ..."
+    wipefs -faq ${disks_list[*]}
 
     for disk in $disks_list; do
         echo "Partitioning disk $disk ..."
@@ -44,7 +44,7 @@ if [ ! -b "$LV_DISK" ]; then
 
     if [ "$ENABLE_MD" -eq "1" ]; then
         echo "Creating MD device /dev/md0 ..."
-        yes | mdadm --create "$MD_DEVICE" --level="$MD_LEVEL" --chunk="$MD_CHUNK" --raid-devices="$partitions_count" "${partitions_list[@]}"
+        yes | mdadm --create "$MD_DEVICE" --level="$MD_LEVEL" --chunk="$MD_CHUNK" --raid-devices="$partitions_count" ${partitions_list[*]}
 
         echo "Storing MD device configuration ..."
         sed -i '/^# Begin of ephemeral-scripts configuration/,/^# End of ephemeral-scripts configuration/{d}' "$MD_CONFIG"
@@ -60,11 +60,11 @@ if [ ! -b "$LV_DISK" ]; then
         echo "Creating LVM VG $VG_NAME ..."
         vgcreate -f "$VG_NAME" "$MD_DEVICE"
     else
-        echo "Creating LVM PV(s) $partitions_list ..."
-        pvcreate -fy "${partitions_list[@]}"
+        echo "Creating LVM PV(s) ${partitions_list[*]} ..."
+        pvcreate -fy ${partitions_list[*]}
 
         echo "Creating LVM VG $VG_NAME ..."
-        vgcreate -f "$VG_NAME" "${partitions_list[@]}"
+        vgcreate -f "$VG_NAME" ${partitions_list[*]}
     fi
 
     if [ "$ENABLE_SWAP" -eq "1" ]; then
