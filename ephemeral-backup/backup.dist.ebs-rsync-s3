@@ -6,7 +6,6 @@
 EBS_DEVICE=/dev/xvdc
 EBS_MOUNTPATH=/mnt/ebs
 EBS_BACKUPDIR="$EBS_MOUNTPATH"
-EBS_ARCHIVE=0
 
 AWS_CLI=$(which aws)
 AWS_PROFILE="default"
@@ -17,7 +16,7 @@ get_snapshot_name() {
 
     d=$(date +%Y%m%d)
 
-    echo "${snapshot_name}${d}";
+    echo "${snapshot_name}${d}"
 }
 
 hook_init() {
@@ -62,9 +61,7 @@ hook_backup() {
         return $?
     fi
 
-    if [ "$EBS_ARCHIVE" -eq "0" ]; then
-        rm -fr "${EBS_BACKUPDIR:?}/$snapshot_name/"
-    fi
+    rm -fr "${EBS_BACKUPDIR:?}/$snapshot_name/"
 
     return $?
 }
