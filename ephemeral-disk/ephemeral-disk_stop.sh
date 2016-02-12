@@ -55,13 +55,13 @@ if [ "$DESTROY_ON_STOP" -eq "1" ]; then
         mdadm --stop "$MD_DEVICE"
         sed -i '/^# Begin of ephemeral-scripts configuration/,/^# End of ephemeral-scripts configuration/{d}' "$MD_CONFIG"
 
-        echo "Wiping RAID partitions $partitions_list ..."
-        mdadm --zero-superblock "${partitions_list[@]}"
+        echo "Wiping RAID partitions ${partitions_list[*]} ..."
+        mdadm --zero-superblock ${partitions_list[*]}
     else
-        echo "Removing LVM PV(s) $disks_list ..."
-        pvremove -f "${disks_list[@]}"
+        echo "Removing LVM PV(s) ${disks_list[*]} ..."
+        pvremove -f ${disks_list[*]}
     fi
 
-    echo "Wiping disks $disks_list ..."
-    wipefs -faq "${disks_list[@]}"
+    echo "Wiping disks ${disks_list[*]} ..."
+    wipefs -faq ${disks_list[*]}
 fi
