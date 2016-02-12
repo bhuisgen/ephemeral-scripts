@@ -7,14 +7,14 @@ EBS_DEVICE=/dev/xvdc
 EBS_MOUNTPATH=/mnt/ebs
 EBS_BACKUPDIR="$EBS_MOUNTPATH/$HOSTNAME"
 
-HISTORY_MAXDAYS=3
+HISTORY_MAXDAYS=9
 
 get_snapshot_name() {
     snapshot_name=$1
 
     d=$(date +%Y%m%d)
 
-    echo "${snapshot_name}${d}";
+    echo "${snapshot_name}${d}"
 }
 
 hook_init() {
@@ -27,7 +27,7 @@ hook_init() {
         true
     fi
 
-    return $?;
+    return $?
 }
 
 hook_check() {
@@ -41,7 +41,8 @@ hook_error() {
 }
 
 hook_success() {
-    find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type f -name '*.tar.gz' -ctime +$HISTORY_MAXDAYS -delete
+    find "$EBS_BACKUPDIR" -mindepth 1 -maxdepth 1 -type f -name '*.tar.gz' -name '*.md5' -ctime +$HISTORY_MAXDAYS -delete
+    
     umount "$EBS_MOUNTPATH" > /dev/null 2>&1 || /bin/true
 }
 
@@ -50,7 +51,16 @@ hook_backup() {
     snapshot_name=$2
 
     mkdir -p "$EBS_BACKUPDIR"
-    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C "$mount_path"
+
+    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C "$mount_path" .
+    if [ $? -ne 0 ]; then
+        return $?
+    fi
+
+    md5sum "$EBS_BACKUPDIR/$snapshot_name.tar.gz" > "$EBS_BACKUPDIR/$snapshot_name.md5"
+    if [ $? -ne 0 ]; then
+        return $?
+    fi
 
     return $?
 }

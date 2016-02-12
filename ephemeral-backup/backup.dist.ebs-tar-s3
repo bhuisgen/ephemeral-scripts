@@ -6,7 +6,6 @@
 EBS_DEVICE=/dev/xvdc
 EBS_MOUNTPATH=/mnt/ebs
 EBS_BACKUPDIR="$EBS_MOUNTPATH"
-EBS_ARCHIVE=0
 
 AWS_CLI=$(which aws)
 AWS_PROFILE="default"
@@ -17,7 +16,7 @@ get_snapshot_name() {
 
     d=$(date +%Y%m%d)
 
-    echo "${snapshot_name}${d}";
+    echo "${snapshot_name}${d}"
 }
 
 hook_init() {
@@ -52,19 +51,29 @@ hook_backup() {
     snapshot_name=$2
 
     mkdir -p "$EBS_BACKUPDIR"
-    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C "$mount_path"
+
+    tar czf "$EBS_BACKUPDIR/$snapshot_name.tar.gz" -C "$mount_path" .
     if [ $? -ne 0 ]; then
         return $?
     fi
 
-    $AWS_CLI --profile "$AWS_PROFILE" s3 cp "$EBS_BACKUPDIR/$snapshot_name.tar.gz" "$AWS_S3_BUCKET/$snapshot_name.tar.gz"
+    $AWS_CLI --profile "$AWS_PROFILE" s3 cp "$EBS_BACKUPDIR/$snapshot_name.tar.gz" "$AWS_S3_BUCKET/"
     if [ $? -ne 0 ]; then
         return $?
     fi
 
-    if [ "$EBS_ARCHIVE" -eq "0" ]; then
-        rm "$EBS_BACKUPDIR/$snapshot_name.tar.gz"
+    md5sum "$EBS_BACKUPDIR/$snapshot_name.tar.gz" > "$EBS_BACKUPDIR/$snapshot_name.md5"
+    if [ $? -ne 0 ]; then
+        return $?
     fi
+
+    $AWS_CLI --profile "$AWS_PROFILE" s3 cp "$EBS_BACKUPDIR/$snapshot_name.md5" "$AWS_S3_BUCKET/"
+    if [ $? -ne 0 ]; then
+        return $?
+    fi
+
+    rm "$EBS_BACKUPDIR/$snapshot_name.tar.gz"
+    rm "$EBS_BACKUPDIR/$snapshot_name.md5"
 
     return $?
 }
