@@ -22,7 +22,7 @@ uninstall:
 	rm -f /etc/ephemeral-scripts/backup
 	rm -f /etc/systemd/system/ephemeral-backup.timer
 	rm -f /etc/systemd/system/ephemeral-backup.service
-	rm -f /etc/default/ephemeral-disk
+	rm -f /etc/default/ephemeral-backup
 	systemctl daemon-reload
 
 enable:
