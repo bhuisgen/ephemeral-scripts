@@ -6,10 +6,10 @@ install:
 	stat ephemeral-disk > /dev/null 2>&1 || (echo "ephemeral-disk file not found" ; exit 1)
 	stat ephemeral-units.service > /dev/null 2>&1 || (echo "ephemeral-units.service file not found" ; exit 1)
 	mkdir -p /etc/ephemeral-scripts/
-	cp ephemeral-disk_start.sh /etc/ephemeral-scripts/
-	chmod 750 /etc/ephemeral-scripts/ephemeral-disk_start.sh
-	cp ephemeral-disk_stop.sh /etc/ephemeral-scripts/
-	chmod 750 /etc/ephemeral-scripts/ephemeral-disk_stop.sh
+	cp ephemeral-disk_start /etc/ephemeral-scripts/
+	chmod 750 /etc/ephemeral-scripts/ephemeral-disk_start
+	cp ephemeral-disk_stop /etc/ephemeral-scripts/
+	chmod 750 /etc/ephemeral-scripts/ephemeral-disk_stop
 	cp ephemeral-disk.service /etc/systemd/system/
 	cp ephemeral-data.mount /etc/systemd/system/
 	cp ephemeral-units.service /etc/systemd/system/
@@ -17,8 +17,8 @@ install:
 	systemctl daemon-reload
 
 uninstall:
-	rm -f /etc/ephemeral-scripts/ephemeral-disk_start.sh
-	rm -f /etc/ephemeral-scripts/ephemeral-disk_stop.sh
+	rm -f /etc/ephemeral-scripts/ephemeral-disk_start
+	rm -f /etc/ephemeral-scripts/ephemeral-disk_stop
 	rmdir /etc/ephemeral-scripts/
 	rm -f /etc/systemd/system/ephemeral-disk.service
 	rm -f /etc/systemd/system/ephemeral-data.mount

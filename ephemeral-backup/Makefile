@@ -6,10 +6,10 @@ install:
 	stat /etc/systemd/system/ephemeral-disk.service > /dev/null 2>&1 || (echo "ephemeral-disk.service not found" ; exit 1)
 	stat ephemeral-backup > /dev/null 2>&1 || (echo "ephemeral-backup file not found" ; exit 1)
 	stat backup > /dev/null 2>&1 || (echo "backup file not found" ; exit 1)
-	stat ephemeral-backup.sh > /dev/null 2>&1 || (echo "ephemeral-backup.sh file not found" ; exit 1)
+	stat ephemeral-backup_run > /dev/null 2>&1 || (echo "ephemeral-backup_run file not found" ; exit 1)
 	stat ephemeral-backup.timer > /dev/null 2>&1 || (echo "ephemeral-backup.timer file not found" ; exit 1)
-	cp ephemeral-backup.sh /etc/ephemeral-scripts/
-	chmod 750 /etc/ephemeral-scripts/ephemeral-backup.sh
+	cp ephemeral-backup_run /etc/ephemeral-scripts/
+	chmod 750 /etc/ephemeral-scripts/ephemeral-backup_run
 	cp backup /etc/ephemeral-scripts/
 	chmod 640 /etc/ephemeral-scripts/backup
 	cp ephemeral-backup.service /etc/systemd/system/
@@ -18,7 +18,7 @@ install:
 	systemctl daemon-reload
 
 uninstall:
-	rm -f /etc/ephemeral-scripts/ephemeral-backup.sh
+	rm -f /etc/ephemeral-scripts/ephemeral-backup_run
 	rm -f /etc/ephemeral-scripts/backup
 	rm -f /etc/systemd/system/ephemeral-backup.timer
 	rm -f /etc/systemd/system/ephemeral-backup.service

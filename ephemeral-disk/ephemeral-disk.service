@@ -10,6 +10,6 @@ WantedBy=local-fs.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/bin/bash /etc/ephemeral-scripts/ephemeral-disk_start.sh
+ExecStart=/etc/ephemeral-scripts/ephemeral-disk_start
 TimeoutStartSec=300
-ExecStop=/bin/bash /etc/ephemeral-scripts/ephemeral-disk_stop.sh
+ExecStop=/etc/ephemeral-scripts/ephemeral-disk_stop
