@@ -67,8 +67,8 @@ This script backups the ephemeral data by creating a LVM snapshot of the ephemer
     # cp ephemeral-backup.dist ephemeral-backup
     # vim ephemeral-backup
 
-    # cp backup.sh.dist backup.sh
-    # vim backup.sh
+    # cp backup.dist backup
+    # vim backup
 
     # cp ephemeral-backup-daily.timer.dist ephemeral-backup-daily.timer
 
