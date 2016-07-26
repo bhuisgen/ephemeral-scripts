@@ -37,11 +37,14 @@ if [ ! -b "$LV_DISK" ]; then
             echo "Enabling partition LVM flag ..."
             parted --script "$disk" set 1 lvm on
         fi
-    done
 
-    echo "Probing partitions ..."
-    partprobe
-    sleep 1
+        echo "Probing partitions ..."
+        partprobe
+        for delay in $(seq 1 4) ; do
+            test -b "${disk}1" && break
+            sleep $delay
+        done
+    done
 
     if [ "$ENABLE_MD" -eq "1" ]; then
         echo "Creating MD device /dev/md0 ..."
