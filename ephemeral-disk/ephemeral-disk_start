@@ -41,8 +41,8 @@ if [ ! -b "$LV_DISK" ]; then
         echo "Probing partitions ..."
         partprobe
         for delay in $(seq 1 4) ; do
-            test -b "${disk}1" && break
             sleep $delay
+            test -b "${disk}1" && break
         done
     done
 

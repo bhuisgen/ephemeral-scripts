@@ -10,4 +10,4 @@ RequiredBy=ephemeral-disk.service ephemeral-data.mount
 
 [Service]
 Type=simple
-ExecStart=/bin/bash /etc/ephemeral-scripts/ephemeral-backup.sh
+ExecStart=/etc/ephemeral-scripts/ephemeral-backup_run
