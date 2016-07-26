@@ -41,6 +41,7 @@ if [ ! -b "$LV_DISK" ]; then
 
     echo "Probing partitions ..."
     partprobe
+    sleep 1
 
     if [ "$ENABLE_MD" -eq "1" ]; then
         echo "Creating MD device /dev/md0 ..."
