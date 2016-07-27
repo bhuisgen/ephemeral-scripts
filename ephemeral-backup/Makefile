@@ -6,7 +6,6 @@ install:
 	stat /etc/systemd/system/ephemeral-disk.service > /dev/null 2>&1 || (echo "ephemeral-disk.service not found" ; exit 1)
 	stat ephemeral-backup > /dev/null 2>&1 || (echo "ephemeral-backup file not found" ; exit 1)
 	stat backup > /dev/null 2>&1 || (echo "backup file not found" ; exit 1)
-	stat ephemeral-backup_run > /dev/null 2>&1 || (echo "ephemeral-backup_run file not found" ; exit 1)
 	stat ephemeral-backup.timer > /dev/null 2>&1 || (echo "ephemeral-backup.timer file not found" ; exit 1)
 	cp ephemeral-backup_run /etc/ephemeral-scripts/
 	chmod 750 /etc/ephemeral-scripts/ephemeral-backup_run
