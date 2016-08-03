@@ -38,7 +38,7 @@ LV_DATA_EXTENTS=90%FREE
 MOUNT_FSTYPE=ext4
 
 # mount options
-MOUNT_OPTIONS="defaults,noatime,nodev,nosuid"
+MOUNT_OPTIONS="defaults,nofail,noatime,nodev,nosuid"
 
 # mountpoint *** DON'T CHANGE THIS SETTING ***
 MOUNT_PATH=/ephemeral/data
