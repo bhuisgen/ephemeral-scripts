@@ -32,7 +32,7 @@ If you want to use software RAID, add this one:
 
     # apt install mdadm
 
-Before configuring the service, you need to remove your ephemeral disks from
+> Before configuring the service, you need to remove your ephemeral disks from
 the  */etc/fstab* file.
 
     # cd ephemeral-disk/
