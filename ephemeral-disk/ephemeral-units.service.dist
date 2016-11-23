@@ -1,15 +1,14 @@
 [Unit]
 Description=Run services using ephemeral disk
-# ADD YOUR DEPENDENCIES HERE
 After=ephemeral-disk.service ephemeral-data.mount
 Requires=ephemeral-disk.service ephemeral-data.mount
-# ADD YOUR DEPENDENCIES HERE
+# TODO: list the units using the ephemeral storage that should be started
+# after mounting the storage
 Before=
 ConditionPathIsMountPoint=/ephemeral/data
 
 [Install]
 WantedBy=local-fs.target
-# ADD YOUR DEPENDENCIES HERE
 RequiredBy=ephemeral-disk.service ephemeral-data.mount
 
 [Service]

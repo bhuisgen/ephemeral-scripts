@@ -1,13 +1,13 @@
 [Unit]
 Description=Run services using ephemeral disk
-Requires=ephemeral-disk.service ephemeral-data.mount rabbitmq-server.service
+Requires=ephemeral-disk.service ephemeral-data.mount
 After=ephemeral-disk.service ephemeral-data.mount
 Before=rabbitmq-server.service
 ConditionPathIsMountPoint=/ephemeral/data
 
 [Install]
 WantedBy=local-fs.target
-RequiredBy=ephemeral-disk.service ephemeral-data.mount rabbitmq-server.service
+RequiredBy=ephemeral-disk.service ephemeral-data.mount
 
 [Service]
 Type=oneshot
